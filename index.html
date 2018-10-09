@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>CLOCK_DOM</title>
+</head>
+<body>
+	<script>
+		'use strict';
+		//создаём элементы часов
+		let dialOfClock = document.createElement('div'),
+		    centerDot = document.createElement('div'),
+		    hourHand = document.createElement('div'),
+		    minuteHand = document.createElement('div'),
+		    secondHand = document.createElement('div');
+		//применяем стили элементов часов
+		dialOfClock.style.cssText = `width: 200px;
+		                             height: 200px;
+		                             border-radius: 100px;
+		                             background-color: #fcca66;
+		                             position: relative;`;
+		centerDot.style.cssText = `width: 4px;
+		                          height: 4px;
+		                          border-radius: 2px;
+		                          background-color: black;
+		                          position: absolute;
+		                          top: 98px;
+		                          left: 98px;`;
+		hourHand.style.cssText = `width: 10px;
+		                          height: 50px;
+		                          border-radius: 5px;
+		                          background-color: black;
+		                          opacity: .6;
+		                          position: absolute;
+		                          top: 60px;
+		                          left: 95px;
+		                          transform-origin: 5px 40px;`;
+		minuteHand.style.cssText = `width: 4px;
+		                            height: 90px;
+		                            border-radius: 2px;
+		                            background-color: black;
+		                            opacity: .6;
+		                            position: absolute;
+		                            top: 20px;
+		                            left: 98px;
+		                            transform-origin: 2px 80px;`;
+		secondHand.style.cssText = `width: 2px;
+		                            height: 100px;
+		                            border-radius: 1px;
+		                            background-color: black;
+		                            opacity: .6;
+		                            position: absolute;
+		                            top: 10px;
+		                            left: 99px;
+		                            transform-origin: 1px 90px;`;
+		document.body.appendChild(dialOfClock);
+
+
+		let corner = 30; //угол, между цифрами на табло относительно центра часов
+
+		//создаём цифры на табло, используя цикл
+		for (let i = 1; i < 13; i++) {
+		  let numContainer = document.createElement('div'),
+		      numSpan = document.createElement('span'),
+		      num = i;
+		  //стили фонов цифр
+		  numContainer.style.cssText = `display: flex;
+		                                justify-content: center;
+		                                align-items: center;
+		                                width: 26px;
+		                                height: 26px;
+		                                border-radius: 13px;
+		                                background-color: #48b382;
+		                                position: absolute;
+		                                top: 10px;
+		                                left: 87px;
+		                                transform: rotate(${corner}deg);
+		                                transform-origin: 13px 90px;`;
+		  //стили самих цифр
+		  numSpan.style.cssText = `display: inline-block;
+		                           transform: rotate(-${corner}deg);
+		                           transform-origin: center;`;
+		  //значение цифры
+		  numSpan.textContent = i;
+
+		  dialOfClock.appendChild(numContainer);
+		  numContainer.appendChild(numSpan);
+		  //каждый последующий блок с цифрой располагаем на 30градусов дальше
+		  corner += 30;
+		}
+		//вставляем остальные элементы аналоговых часов
+		dialOfClock.appendChild(centerDot);
+		dialOfClock.appendChild(hourHand);
+		dialOfClock.appendChild(secondHand);
+		dialOfClock.appendChild(minuteHand);
+
+		//контейнер для цифровых часов
+		let digitalClock = document.createElement('div');
+
+		digitalClock.style.cssText = `position: absolute;
+		                              top: 25%;
+		                              left: 35%;`;
+
+		//создаём текущую дату и отображаем текущее время, используя анимацию
+		function showTime() {
+		  let currentDate = new Date(),
+		      currentTime = currentDate.toLocaleTimeString();
+		  digitalClock.innerHTML = currentTime;
+		  let sec = currentDate.getSeconds(),
+		      min = currentDate.getMinutes(),
+		      hour = currentDate.getHours();
+
+		  secondHand.style.transform = `rotate(${sec*6}deg)`;
+		  minuteHand.style.transform = `rotate(${min*6}deg)`;
+		  hourHand.style.transform = `rotate(${hour*30 + min*0.5}deg)`;
+		  requestAnimationFrame(showTime); //метод должен каждый раз вызывать сам себя
+		}
+		requestAnimationFrame(showTime);
+
+		dialOfClock.appendChild(digitalClock);
+	</script>
+
+</body>
+</html>
